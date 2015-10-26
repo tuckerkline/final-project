@@ -47,7 +47,7 @@ router.post('/login', function(req, res, next){
 
 
 router.get('/home', function(req, res) {
-  res.sendFile('/html/home.html', {root: './public'})
+  res.send()
 })
 
 module.exports = router;

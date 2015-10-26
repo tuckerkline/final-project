@@ -11,6 +11,7 @@ angular.module('myApp')
             }).then(function(returnData){
                 console.log(returnData)
                 if ( returnData.data.success ) { window.location.href="/home" }
+                $scope.username = returnData.data.username
             })
         }
 
@@ -20,7 +21,7 @@ angular.module('myApp')
                 url    : '/login',
                 data   : $scope.loginForm
             }).then(function(returnData){
-                if ( returnData.data.success ) { window.location.href="/chat" } 
+                if ( returnData.data.success ) { window.location.href="/home" } 
                 else { console.log(returnData)}
             })
         }

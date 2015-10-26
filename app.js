@@ -17,7 +17,7 @@ var mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost/game')
 
 
-
+var User = require('./Models/users.js')
 /** Express Session Setup **/
 var session = require('express-session')
 app.sessionMiddleware = session({
@@ -26,7 +26,7 @@ app.sessionMiddleware = session({
   saveUninitialized: true,
 })
 app.use(app.sessionMiddleware)
-
+app.use(bodyParser.json())
 /** Passport Config **/
 var bcrypt = require('bcryptjs')
 var passport = require('passport')

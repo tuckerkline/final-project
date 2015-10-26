@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ng-app = 'myApp'>
+<head>
+	<title>Text</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+</head>
+<body ng-controller = 'mainController'>
+
+{{greeting}}
+
+        <h1>Existing Users</h1>
+        <form ng-submit="login()">
+            <input type="text" ng-model="loginForm.username" placeholder="Username"/>
+            <input type="password" ng-model="loginForm.password" placeholder="Password"/>
+            <input type="submit"/>
+        </form>
+
+        <h1>Register</h1>
+        <form ng-submit="signup()">
+            <input type="text" ng-model="signupForm.username" placeholder="Username"/>
+            <input type="password" ng-model="signupForm.password" placeholder="Password"/>
+            <input type="submit"/>
+        </form>
+
+<script src= "javascripts/main.js"></script>
+</body>
+</html>

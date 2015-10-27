@@ -1,4 +1,22 @@
-angular.module('myApp', [])
+angular.module('myApp', ['ngRoute'])
+
+
+angular.module('myApp')
+    .config(['$routeProvider', function($routeProvider){
+        $routeProvider
+            .when('/', {
+                templateUrl : '/html/login.html',
+                controller  : 'mainController'
+            })
+            .when('/map', {
+                templateUrl : '/html/map.html',
+                controller  : 'mainController'
+            })
+
+
+
+
+    }])
 
 angular.module('myApp')
 	.controller('mainController', ['$scope', '$http', function($scope, $http) {
@@ -10,8 +28,9 @@ angular.module('myApp')
                 data   : $scope.signupForm
             }).then(function(returnData){
                 console.log(returnData)
+                 $scope.username = returnData.data.username
                 if ( returnData.data.success ) { window.location.href="/home" }
-                $scope.username = returnData.data.username
+               
             })
         }
 

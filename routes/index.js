@@ -9,7 +9,7 @@ var User = require('../Models/users.js')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.sendFile('/html/index.html', {root: './public'})
+  res.sendFile('/html/home.html', {root: './public'})
 });
 
 
@@ -47,7 +47,11 @@ router.post('/login', function(req, res, next){
 
 
 router.get('/home', function(req, res) {
-  res.send()
+  	res.send()
+})
+
+router.get('/map', function(req, res) {
+	res.sendFile('/html/map.html', {root: './public'})
 })
 
 module.exports = router;

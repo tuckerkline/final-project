@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs')
 var passport = require('passport')
-
 var User = require('../Models/users.js')
 
 
@@ -45,13 +44,15 @@ router.post('/login', function(req, res, next){
     })(req, res, next);
 })
 
-
-router.get('/home', function(req, res) {
-  	res.send()
+router.get('/me', function(req, res) {
+    res.send(req.user)
 })
 
-router.get('/map', function(req, res) {
-	res.sendFile('/html/map.html', {root: './public'})
-})
+router.get('/logout', function(req, res){
+  req.logout();
+  res.send('goodbye');
+});
+
+
 
 module.exports = router;

@@ -53,6 +53,14 @@ router.get('/logout', function(req, res){
   res.send('goodbye');
 });
 
+router.post('/me', function(req, res) {
+	res.send(req.user)
+	console.log(req.body)
+	User.findOneAndUpdate({username : req.body.username}, req.body, function(error, data) {
+		console.log(data)
+	})
+})
+
 
 
 module.exports = router;

@@ -45,6 +45,7 @@ router.post('/login', function(req, res, next){
 })
 
 router.get('/me', function(req, res) {
+    console.log(req.user)
     res.send(req.user)
 })
 

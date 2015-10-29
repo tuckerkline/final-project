@@ -7,7 +7,13 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var app = express();
 var passport = require('passport')
+var http = require('http').Server(app)
+var io = require('socket.io')(http)
+// var socket = io()
 
+io.on('connection', function(socket){
+    console.log('a user connected')
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 

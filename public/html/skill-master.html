@@ -1,0 +1,21 @@
+<div ng-show = "notdead">
+<img src = "../images/skill-master.jpg">
+{{text}}
+
+<div ng-show = 'level2'>
+The first skill you will learn is called hit harder. It will allow you to hit harder.
+<br>
+
+<button ng-show = 'hitharderbought' ng-click = "buyLevel2Skill()">Buy Hit Harder for 10 Gold</button>
+<br>
+
+{{hithardertext}}  <br>
+You have {{user.gold}} gold.
+
+
+</div>
+</div>
+
+<div ng-show = "!notdead">
+you're dead, dude. go get revived
+</div>

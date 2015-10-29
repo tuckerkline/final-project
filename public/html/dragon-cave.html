@@ -1,3 +1,4 @@
+<div ng-show = "notdead">
 <h3> you're in the dragon cave now, BABY!</h3>
 You have {{user.HP}} HP.
 <img ng-show="dragonShow" src = "../images/dragon.jpg">
@@ -15,4 +16,9 @@ You have {{user.HP}} HP.
 
 <div ng-show = "!dragonShow">
 <button ng-click = 'deeper()'>Go deeper in the Dragon Cave</button>
+</div>
+</div>
+
+<div ng-show = "!notdead">
+you're dead, dude. go get revived
 </div>

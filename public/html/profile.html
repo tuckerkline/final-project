@@ -12,11 +12,16 @@ MP : {{user.MP}}
 <br>
 Gold: {{user.gold}}
 <br>
-Potions: {{user.potions}} <button ng-click = "drinkPotion()"><i class="fa fa-plus-square"></i></button>
-<br>
+Potions: {{user.potions}} <button ng-click = "drinkPotion()"><i class="fa fa-plus-square"></i>
+</button>
 
+<br>
+AP: {{user.attackPower}}
+<br>
+Skills : <ul ng-repeat="skill in user.skills">
+<li>{{skill}}</li>
+</ul>
 
 
 <br>
 <button ng-click = 'logout()'>log out </button>
-<button ng-click = 'addgold()'>add g </button>

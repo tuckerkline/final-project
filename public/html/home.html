@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html ng-app = 'myApp'>
 <head>
-	<title>Home</title>
+	<title>Bad Place</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.js" type="text/javascript"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-route.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
 </head>
 <body ng-cloak>
 <div class = 'main container'>
-<nav>
-	<ul>
-		<li><a href = "/#/">Home</a></li>
-		<li><a href = "/#/profile">Profile</a></li>
-		<li><a href = '/#/map'>Map</a></li>
+<nav class = "navbar navbar-default">
+	
+		<a class="navbar-brand" href = "/#/map">Home</a>
+		<a class="navbar-brand" href = "/#/profile">Profile</a>
+		<a class="navbar-brand" href = "/#/chat">Chat</a>
 
 	</ul>
 </nav>
 
-<div ng-view>
+<div ng-view class ="main container">
 
 </div>
 </div>

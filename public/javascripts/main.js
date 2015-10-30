@@ -231,6 +231,8 @@ angular.module('myApp')
             }
         })
 
+
+
         console.log($rootScope.user)
         var Dragon = function() {
             this.name = "dragon"
@@ -327,9 +329,9 @@ angular.module('myApp')
         }
 
         $scope.deeper = function() {
-            // $scope.dragon = new Dragon()
+                            
             $window.location.reload()
-            // $location.url('/dragon-cave')
+            
             
 
         }

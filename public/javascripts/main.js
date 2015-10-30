@@ -55,6 +55,10 @@ angular.module('myApp')
                 templateUrl : '/html/skill-master.html',
                 controller  : 'skill-masterController'
             })
+            .when ('/dino-nest', {
+                templateUrl : '/html/dino-nest.html',
+                controller  : 'dino-nestController'
+            })
 
 
  
@@ -126,11 +130,11 @@ angular.module('myApp')
         }
 
         $scope.drinkPotion = function() {
-            if ($rootScope.user.HP < $rootScope.user.maxHP) {
+            if ($rootScope.user.HP < $rootScope.user.maxHP && $rootScope.user.potions > 0) {
                 $rootScope.user.HP++
                 $rootScope.user.potions--
             } else {
-                alert('you are at full health')
+                alert("it doesn't work like that")
             }
             $http({
                 method : 'POST',
@@ -176,6 +180,10 @@ angular.module('myApp')
             })
         }
 
+        if($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs < 8) {
+            $scope.text = "ahh. You have come back for another quest, I see! Well i was just about to make breakfast, but seem to be missing some eggs. Can you grab me 8 dinosaur eggs from the dino nest? After breakfast we'll get to the real adventures eh? Can't adventure on an empty stomach, right, lol jk okay bye!!1! \n You currently have " + $rootScope.user.dinoEggs + " Dino Eggs!"
+        }
+
 
 
     }])
@@ -195,8 +203,7 @@ angular.module('myApp')
             }
         })
 
-        $scope.greeting = 'dragon cave bitch!'
-        // console.log($rootScope.user)
+        console.log($rootScope.user)
         var Dragon = function() {
             this.name = "dragon"
             this.hp = 10 + Math.floor(Math.random() * 5)
@@ -206,10 +213,9 @@ angular.module('myApp')
             this.attackPower = 2
         }
 
+        
+    
         $scope.notdead = true
-        if ($rootScope.user.HP <= 0) {
-            $scope.notdead = false
-        }
 
         $scope.dragon = new Dragon()
         console.log($scope.dragon)
@@ -239,6 +245,7 @@ angular.module('myApp')
             if ($rootScope.user.HP <= 0) {
                 $scope.text = "you're dead"
                 $scope.dragonShow = !$scope.dragonShow
+                $scope.notdead = false
             }
 
             $http({
@@ -249,20 +256,17 @@ angular.module('myApp')
                 // no need for anything here
             })
 
-            if ($rootScope.user.HP <= 0) {
-            $scope.notdead = false
-        }
+           
         }
 
         $scope.run = function() {
-            console.log('run')
             $location.url('/map')
         }
 
         $scope.deeper = function() {
-            $scope.dragon = new Dragon()
+            // $scope.dragon = new Dragon()
             $window.location.reload()
-            $location.url('/dragon-cave')
+            // $location.url('/dragon-cave')
             
 
         }
@@ -349,7 +353,139 @@ angular.module('myApp')
 
 angular.module('myApp')
     .controller('chatController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', function($scope, authService, $rootScope, $http, $location, $window) {
-        $scope.chathi = "yo chatroom"
+
+        authService.authCheck(function(user) {
+           if (!user) {
+            console.log('no user, dude')
+            $location.url('/')
+            } else {
+                $scope.user = user
+                $rootScope.user = $scope.user
+            }
+        })
+
+        $scope.chatMessage = ''
+        $scope.loggedInUsers = []
+        $scope.messageHistory = []
+
+       
+
+        // calling `io()` fires the `connection` event on the server
+        var socket = io()
+        socket.on('loggedInUsers', function(data){
+
+            $scope.loggedInUsers = data
+            
+            $scope.$apply()
+            console.log(data)
+        })
+        socket.on('chatMessage', function(data){
+            console.log('chat message? ', data)
+            $scope.messageHistory.push(data)
+            $scope.$apply()
+        })
+        socket.on('whisper', function(data){
+            console.log(data.sender + ': ' + data.content)
+        })
+
+        $scope.sendMessage = function(event){
+            if ( event.which === 13 ) {
+                console.log('chatting!!')
+                if ( $scope.chatMessage[0] != '/' ) {
+                    socket.emit('chatMessage', $scope.chatMessage)
+                }
+                else {
+                    var recipient = $scope.chatMessage.split(' ')[0].slice(1)
+                    var content   = $scope.chatMessage.split(' ').slice(1).join(' ')
+                    // var recipient = $scope.chatMessage
+                    socket.emit('whisper', {
+                        recipient:recipient,
+                        content:content
+                    })
+                }
+                $scope.chatMessage = ''
+            }
+        }
+
+
+
+    }])
+
+angular.module('myApp')
+     .controller('dino-nestController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', function($scope, authService, $rootScope, $http, $location, $window, levelService) {
+
+        authService.authCheck(function(user) {
+           if (!user) {
+            console.log('no user, dude')
+            $location.url('/')
+            } else {
+                $scope.user = user
+                $rootScope.user = $scope.user
+            }
+        })
+
+        $scope.dinoShow = true
+        $scope.notdead = true
+        // if ( $rootScope.user.HP < 0 ) {
+        //     $scope.notdead = false
+        // }
+
+         var Dino = function() {
+            this.name = "dino"
+            this.hp = 14 + Math.floor(Math.random() * 3)
+            this.xp = Math.floor(this.hp * 2)
+            this.gold = (Math.floor(Math.random() * 11))
+            this.attackPower = 4
+        }
+
+        $scope.dino = new Dino()
+
+        $scope.attack = function() {
+            
+           
+            $scope.dino.hp -= $rootScope.user.attackPower
+            $rootScope.user.HP -= $scope.dino.attackPower
+            $scope.text = "You attack the dino."
+            
+            if ($scope.dino.hp <= 0) {
+                $scope.dinoShow = false
+                $rootScope.user.dinoEggs++
+                $rootScope.user.xp += $scope.dino.xp
+
+                $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
+
+
+                $rootScope.user.gold += $scope.dino.gold
+                $scope.text = "The Dino is dead. You now have " + $rootScope.user.dinoEggs + " Dinosaur eggs for breakfast."
+
+            }
+            
+            if ($rootScope.user.HP <= 0) {
+                $scope.text = "you're dead"
+                $scope.dragonShow = !$scope.dragonShow
+                $scope.notdead = false
+            }
+
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+
+           
+        }
+
+        $scope.run = function() {
+            $location.url('/map')
+        }
+
+        $scope.deeper = function() {
+            $window.location.reload()
+        }
+
+
 
 
     }])

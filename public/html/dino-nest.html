@@ -1,0 +1,24 @@
+<div ng-show = "notdead">
+<h3> you rustle your way into the nest. Turns out it's made up of mostly bones. A momma dino spots you.</h3>
+You have {{user.HP}} HP.
+<img ng-show="dinoShow" src = "../images/dino.jpg">
+
+<br>
+
+
+{{text}}
+
+<br>
+<div ng-show = "dinoShow">
+<button ng-click = "attack()">ATTACK!!</button>
+<button ng-click = "run()"> RUN! </button>
+</div>
+
+<div ng-show = "!dinoShow">
+<button ng-click = 'deeper()'>rustle further into the dino nest</button>
+</div>
+</div>
+
+<div ng-show = "!notdead">
+you're dead, dude. go get revived
+</div>

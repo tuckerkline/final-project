@@ -8,12 +8,8 @@ var routes = require('./routes/index');
 var app = express();
 var passport = require('passport')
 var http = require('http').Server(app)
-var io = require('socket.io')(http)
-// var socket = io()
 
-io.on('connection', function(socket){
-    console.log('a user connected')
-})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
@@ -127,8 +123,62 @@ app.use(function(req, res, next) {
 
 
 
-app.listen(3000, function() {
-  console.log('go on...')
+app.server = app.listen(3000, function (){
+    console.log('go on...')
+})
+
+
+
+var io = require("socket.io")
+var loggedInUsers = {}
+var socketServer = io(app.server)
+
+socketServer.use(function(socket, next){
+    app.sessionMiddleware(socket.request, {}, next);
+})
+
+// socket servers can proactively emit messages for no reason!
+// setInterval(function(){socketServer.emit('chatMessage',{content:'hi!'})},400)
+
+// the `socket` object in the callback function represents the socket connection for a single user.
+socketServer.on("connection", function(socket){
+    // make sure the socket connection is authenticated.
+    if ( socket.request.session && socket.request.session.passport && socket.request.session.passport.user ) {
+        // this is our SERIALIZED user, a.k.a. just the user's mongo ID.
+        var id = socket.request.session.passport.user
+        User.findById(id, function(error, user){
+
+            // console.log('socket user: ', user)
+            loggedInUsers[user.username] = true;
+            // console.log('whos logged in? ', loggedInUsers)
+            socketServer.emit('loggedInUsers', loggedInUsers)
+
+
+            socket.on('chatMessage', function(data){
+                console.log('message to server!', data)
+                socketServer.emit('chatMessage', {sender:user.username,content:data})
+
+            })
+
+            
+            socket.join(user.username)
+            socket.on('whisper', function(data){
+                // console.log('whisper ', data)
+                // console.log(loggedInUsers)
+                socketServer.to(data.recipient).emit('whisper', {
+                    sender  : user.username,
+                    content : data.content
+                })
+            })
+
+            socket.on('disconnect', function(){
+                console.log('user disconnected');
+                loggedInUsers[user.username] = false;
+                socketServer.emit('loggedInUsers', loggedInUsers)
+
+            });
+        })
+    }
 })
 
 

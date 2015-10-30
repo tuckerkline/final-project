@@ -14,7 +14,8 @@ var userSchema = mongoose.Schema({
     inventory    : { type: Object,  default: {} },
     dragonScales : { type: Number, default: 0},
     questNumber  : { type: Number, default: 0}, 
-    skills       : { type: Array, default: []}
+    skills       : { type: Array, default: []},
+    dinoEggs     : { type: Number, default: 0},
 });
 
 module.exports = mongoose.model('user', userSchema); 

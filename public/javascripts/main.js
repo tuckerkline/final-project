@@ -80,7 +80,6 @@ angular.module('myApp')
             }
         })
 
-
         $scope.signup = function(){
             $http({
                 method : 'POST',
@@ -108,6 +107,7 @@ angular.module('myApp')
                 } 
                 else { console.log(returnData)}
             })
+
         }
 
         $scope.logout = function() {
@@ -115,6 +115,7 @@ angular.module('myApp')
                 .then(function(){
                     $location.url('/')
                 })
+
         }
 
 
@@ -133,6 +134,22 @@ angular.module('myApp')
             if ($rootScope.user.HP < $rootScope.user.maxHP && $rootScope.user.potions > 0) {
                 $rootScope.user.HP++
                 $rootScope.user.potions--
+            } else {
+                alert("it doesn't work like that")
+            }
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+        }
+
+        $scope.drinkMPPotion = function() {
+            if ($rootScope.user.MP < $rootScope.user.maxMP && $rootScope.user.MPpotions > 0) {
+                $rootScope.user.MP++
+                $rootScope.user.MPpotions--
             } else {
                 alert("it doesn't work like that")
             }
@@ -169,8 +186,9 @@ angular.module('myApp')
         if ($rootScope.user.questNumber === 0 && $rootScope.user.dragonScales < 10) {
             $scope.text = "Greetings, new adventurer. I suspect you have come here to request a quest. Your first quest is this: bring me 10 dragon scales. You can find them scaly beasts in the Dragon Cave. You currently have: " + $rootScope.user.dragonScales + " dragon scales."
         } else if ($rootScope.user.dragonScales >= 10 && $rootScope.user.questNumber === 0) {
-            $scope.text = "Thank you for the dragon scales. I can now weigh my oregano with more accuracy!!"
+            $scope.text = "Thank you for the dragon scales. I can now weigh my oregano with more accuracy!! Take 10 potions as well!"
             $rootScope.user.questNumber++
+            $rootScope.user.potions += 10
             $http({
                 method : 'POST',
                 url    : '/me',
@@ -180,8 +198,18 @@ angular.module('myApp')
             })
         }
 
-        if($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs < 8) {
+        if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs < 8) {
             $scope.text = "ahh. You have come back for another quest, I see! Well i was just about to make breakfast, but seem to be missing some eggs. Can you grab me 8 dinosaur eggs from the dino nest? After breakfast we'll get to the real adventures eh? Can't adventure on an empty stomach, right, lol jk okay bye!!1! \n You currently have " + $rootScope.user.dinoEggs + " Dino Eggs!"
+        } else if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs >= 8) {
+            $scope.text = "Thank you, thank you, thank you, adventurer! You're such a sweetheart. Here, sit and eat some Dinomellette with me!"
+            $rootScope.user.questNumber++
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
         }
 
 
@@ -259,6 +287,41 @@ angular.module('myApp')
            
         }
 
+        
+        $scope.hitHarder = function() {
+            if($rootScope.user.skills[0] === 'Hit Harder (1 MP)' && $rootScope.user.MP > 0) {
+                $scope.dragon.hp -= ($rootScope.user.attackPower * 1.5)
+                $rootScope.user.HP -= $scope.dragon.attackPower
+                $scope.text = "You hit the dragon. Hard."
+                $rootScope.user.MP--
+
+                
+                if ($scope.dragon.hp <= 0) {
+                    $scope.dragonShow = false
+                    $rootScope.user.xp += $scope.dragon.xp
+                    $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
+                    $rootScope.user.gold += $scope.dragon.gold
+                    $scope.text = "The dragon is dead. You now have " + $rootScope.user.dragonScales + " dragon scales"
+                }
+
+                if ($rootScope.user.HP <= 0) {
+                    $scope.text = "you're dead"
+                    $scope.dragonShow = !$scope.dragonShow
+                    $scope.notdead = false
+                }
+
+                $http({
+                    method : 'POST',
+                    url    : '/me',
+                    data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+            } else (alert("It doesn't work like that! (Do you have MP? Do you have the skill? DIDN'T THINK SO!!"))
+
+        }
+
+
         $scope.run = function() {
             $location.url('/map')
         }
@@ -285,12 +348,15 @@ angular.module('myApp')
             } else {
                  $scope.user = user
                  $rootScope.user = $scope.user
+
             }
         })
 
         $scope.buyPotion = function() {
-            $rootScope.user.potions++
-            $rootScope.user.gold--
+            if ($rootScope.user.gold > 0 ) {
+                $rootScope.user.potions++
+                $rootScope.user.gold--
+            }
 
             $http({
                 method : 'POST',
@@ -300,8 +366,21 @@ angular.module('myApp')
                 // no need for anything here
             })
         }
-        $scope.hi = "yo bitch"
 
+
+        $scope.buyMPpotion = function() {
+            if ($rootScope.user.gold > 1) {
+                $rootScope.user.MPpotions++
+                $rootScope.user.gold -= 2
+            }
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+        }
     }])
 
 
@@ -315,6 +394,7 @@ angular.module('myApp')
             } else {
                 $scope.user = user
                 $rootScope.user = $scope.user
+
             }
         })
 
@@ -367,6 +447,7 @@ angular.module('myApp')
         $scope.chatMessage = ''
         $scope.loggedInUsers = []
         $scope.messageHistory = []
+          
 
        
 
@@ -377,9 +458,9 @@ angular.module('myApp')
             $scope.loggedInUsers = data
             
             $scope.$apply()
-            console.log(data)
+            console.log(data) 
         })
-        socket.on('chatMessage', function(data){
+        socket.on('chatMessage', function(data){ 
             console.log('chat message? ', data)
             $scope.messageHistory.push(data)
             $scope.$apply()
@@ -388,7 +469,7 @@ angular.module('myApp')
             console.log(data.sender + ': ' + data.content)
         })
 
-        $scope.sendMessage = function(event){
+        $scope.sendMessage = function(event){ 
             if ( event.which === 13 ) {
                 console.log('chatting!!')
                 if ( $scope.chatMessage[0] != '/' ) {
@@ -405,7 +486,7 @@ angular.module('myApp')
                 }
                 $scope.chatMessage = ''
             }
-        }
+        } 
 
 
 
@@ -475,6 +556,38 @@ angular.module('myApp')
             })
 
            
+        }
+
+        $scope.hitHarder = function() {
+            if($rootScope.user.skills[0] === 'Hit Harder (1 MP)' && $rootScope.user.MP > 0) {
+                $scope.dino.hp -= ($rootScope.user.attackPower * 1.5)
+                $rootScope.user.HP -= $scope.dino.attackPower
+                $scope.text = "You hit the dino. Hard."
+                $rootScope.user.MP--
+                
+                if ($scope.dino.hp <= 0) {
+                    $scope.dinoShow = false
+                    $rootScope.user.xp += $scope.dino.xp
+                    $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
+                    $rootScope.user.gold += $scope.dino.gold
+                    $scope.text = "The dino is dead. You now have " + $rootScope.user.dinoEggs + " dino eggs"
+                }
+
+                if ($rootScope.user.HP <= 0) {
+                    $scope.text = "you're dead"
+                    $scope.dinoShow = !$scope.dinoShow
+                    $scope.notdead = false
+                }
+ 
+                $http({
+                    method : 'POST',
+                    url    : '/me',
+                    data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+            } else (alert("It doesn't work like that! (Do you have MP? Do you have the skill? DIDN'T THINK SO!!"))
+
         }
 
         $scope.run = function() {

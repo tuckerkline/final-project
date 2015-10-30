@@ -58,6 +58,7 @@ router.get('/logout', function(req, res){
 router.post('/me', function(req, res) {
 	console.log(req.body)
     req.body.maxHP = 20 + (req.body.level * 3)
+    req.body.maxMP = 10 + (req.body.level * 3)
     req.body.attackPower = req.body.level * 3
 
 	User.findOneAndUpdate({username : req.body.username}, req.body, function(error, data) {

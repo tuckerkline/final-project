@@ -9,6 +9,7 @@ var userSchema = mongoose.Schema({
     HP           : { type: Number, default: 20 },
     maxHP        : { type: Number, default: 20},
     MP           : { type: Number, default: 10 },
+    maxMP        : { type: Number, default: 10 },
     attackPower  : { type: Number, default: 3},
     potions      : { type: Number, default: 4 },
     inventory    : { type: Object,  default: {} },
@@ -16,6 +17,7 @@ var userSchema = mongoose.Schema({
     questNumber  : { type: Number, default: 0}, 
     skills       : { type: Array, default: []},
     dinoEggs     : { type: Number, default: 0},
+    MPpotions    : { type: Number, default: 5},
 });
 
 module.exports = mongoose.model('user', userSchema); 

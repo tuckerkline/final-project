@@ -1,16 +1,22 @@
 <div ng-show = "notdead">
 <h3> you rustle your way into the nest. Turns out it's made up of mostly bones. A momma dino spots you.</h3>
-You have {{user.HP}} HP.
+You have {{user.HP}} HP. <br><br>
+
+You have {{user.MP}} MP.
+{{text}}
+<br>
 <img ng-show="dinoShow" src = "../images/dino.jpg">
 
 <br>
 
 
-{{text}}
+
 
 <br>
 <div ng-show = "dinoShow">
 <button ng-click = "attack()">ATTACK!!</button>
+<button ng-click = "hitHarder()">Hit Harder(1MP)</button>
+
 <button ng-click = "run()"> RUN! </button>
 </div>
 

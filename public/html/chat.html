@@ -5,7 +5,7 @@
         </div>
         <div class="chatHistory">
             <div class="text-center"><strong>Chat History</strong></div>
-            <div ng-repeat="message in messageHistory">{{message.sender}} : {{message.content}}</div>
+            <div ng-repeat="message in messageHistory track by $index">{{message.sender}} : {{message.content}}</div>
         </div>
         <input ng-keydown="sendMessage($event)" ng-model="chatMessage" class="chatBox">
         

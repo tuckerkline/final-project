@@ -59,6 +59,14 @@ angular.module('myApp')
                 templateUrl : '/html/dino-nest.html',
                 controller  : 'dino-nestController'
             })
+            .when('/inventory', {
+                templateUrl : '/html/inventory.html',
+                controller  : 'inventoryController'
+            })
+            .when('/skills', {
+                templateUrl : '/html/skills.html',
+                controller  : 'skillsController'
+            })
 
 
  
@@ -162,6 +170,17 @@ angular.module('myApp')
             })
         }
 
+ // HOW TO ADD AN ITEM
+        // $scope.ait = function() {
+        //     $rootScope.user.inventory["Test Item"] = 1
+        //     $http({
+        //         method : 'POST',
+        //         url    : '/me',
+        //         data   : $scope.user
+        //     }).then(function(returnData) {
+        //         // no need for anything here
+        //     })
+        // }
 	}])
 
 
@@ -219,7 +238,7 @@ angular.module('myApp')
 
 
 angular.module('myApp')
-    .controller('dragon-caveController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', function($scope, authService, $rootScope, $http, $location, $window, levelService) {
+    .controller('dragon-caveController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', '$route', function($scope, authService, $rootScope, $http, $location, $window, levelService, $route) {
 
         authService.authCheck(function(user) {
             if (!user) {
@@ -245,7 +264,11 @@ angular.module('myApp')
 
         
     
-        $scope.notdead = true
+        $rootScope.alive = true
+
+        if( $rootScope.user.HP <= 0 ) {
+            $rootScope.alive = false
+        }
 
         $scope.dragon = new Dragon()
         console.log($scope.dragon)
@@ -274,8 +297,8 @@ angular.module('myApp')
             
             if ($rootScope.user.HP <= 0) {
                 $scope.text = "you're dead"
-                $scope.dragonShow = !$scope.dragonShow
-                $scope.notdead = false
+                // $scope.dragonShow = !$scope.dragonShow
+                $rootScope.alive = false
             }
 
             $http({
@@ -309,7 +332,7 @@ angular.module('myApp')
                 if ($rootScope.user.HP <= 0) {
                     $scope.text = "you're dead"
                     $scope.dragonShow = !$scope.dragonShow
-                    $scope.notdead = false
+                    $rootScope.alive = false
                 }
 
                 $http({
@@ -330,7 +353,7 @@ angular.module('myApp')
 
         $scope.deeper = function() {
                             
-            $window.location.reload()
+            $route.reload()
             
             
 
@@ -383,6 +406,21 @@ angular.module('myApp')
                 // no need for anything here
             })
         }
+
+        $scope.buyUselessStack = function() {
+            if ($rootScope.user.gold >= 1000) {
+                $rootScope.user.inventory["Useless Stack"]++
+                $rootScope.user.gold -= 1000
+            }
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+
+        }
     }])
 
 
@@ -402,23 +440,54 @@ angular.module('myApp')
 
         $scope.text = "come back when you are stronger"
         $scope.level2 = false
+        $scope.level3 = false
         $scope.hitharderbought = true
+        $scope.makemestrongerbought = true
+
+        if ( $rootScope.user.level >= 2 ) {
+            $scope.level2 = true
+            $scope.text = "Welcome, adventurer, I am Erich, the skill-master."
+        }
+
+        if( $rootScope.user.level >= 3) {
+            $scope.level3 = true
+            $scope.lvl3text = "Ah. Level 3. I hope Hit Harder has been treating you well. For level 3 I will teach you a buff! You use 'Make Me Stronger' to buff yourself for 10 attacks. It will make you hit harder!"
+        }
 
         if ($rootScope.user.skills[0] === 'Hit Harder (1 MP)') {
             $scope.hitharderbought = false
             $scope.hithardertext = "you've bought Hit Harder already"
         }
 
-        if ( $rootScope.user.level >= 2 ) {
-            $scope.level2 = true
-            $scope.text = "Welcome, adventurer, I am Erich, the skill-master. I see you are level 2(or above). Time to learn your first skill."
+        if ($rootScope.user.skills[1] === 'Make Me Stronger (2 MP)') {
+            $scope.makemestrongerbought = false
+            $scope.lvl3text = "You've bought Make Me Stronger already"
         }
+
+        
 
         $scope.buyLevel2Skill = function() {
             $rootScope.user.skills.push('Hit Harder (1 MP)')
+            $rootScope.user.gold -= 10
             $scope.text = "congrats you've learned Hit Harder! Go hit someone harder!"
             $scope.hitharderbought = false
             $scope.hithardertext = "you've bought Hit Harder already"
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+        }
+
+
+        $scope.buyLevel3Skill = function() {
+            $rootScope.user.skills.push('Make Me Stronger (2 MP)')
+            $rootScope.user.gold -= 20
+            $scope.text = "congrats you've learned Make Me Stronger! Go be strong!"
+            $scope.makemestrongerbought = false
+            $scope.lvl3text = "you've bought Make Me Stronger already"
             $http({
                 method : 'POST',
                 url    : '/me',
@@ -495,7 +564,7 @@ angular.module('myApp')
     }])
 
 angular.module('myApp')
-     .controller('dino-nestController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', function($scope, authService, $rootScope, $http, $location, $window, levelService) {
+     .controller('dino-nestController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', '$route', function($scope, authService, $rootScope, $http, $location, $window, levelService, $route) {
 
         authService.authCheck(function(user) {
            if (!user) {
@@ -508,10 +577,10 @@ angular.module('myApp')
         })
 
         $scope.dinoShow = true
-        $scope.notdead = true
-        // if ( $rootScope.user.HP < 0 ) {
-        //     $scope.notdead = false
-        // }
+        $rootScope.alive = true
+        if ( $rootScope.user.HP < 0 ) {
+            $rootScope.alive = false
+        }
 
          var Dino = function() {
             this.name = "dino"
@@ -545,8 +614,8 @@ angular.module('myApp')
             
             if ($rootScope.user.HP <= 0) {
                 $scope.text = "you're dead"
-                $scope.dragonShow = !$scope.dragonShow
-                $scope.notdead = false
+                $scope.dinoShow = !$scope.dinoShow
+                $rootScope.alive = false
             }
 
             $http({
@@ -578,7 +647,7 @@ angular.module('myApp')
                 if ($rootScope.user.HP <= 0) {
                     $scope.text = "you're dead"
                     $scope.dinoShow = !$scope.dinoShow
-                    $scope.notdead = false
+                    $rootScope.alive = false
                 }
  
                 $http({
@@ -597,7 +666,7 @@ angular.module('myApp')
         }
 
         $scope.deeper = function() {
-            $window.location.reload()
+            $route.reload()
         }
 
 
@@ -605,6 +674,40 @@ angular.module('myApp')
 
     }])
 
+
+angular.module('myApp')
+     .controller('inventoryController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', '$route', function($scope, authService, $rootScope, $http, $location, $window, levelService, $route) {
+
+        authService.authCheck(function(user) {
+           if (!user) {
+            console.log('no user, dude')
+            $location.url('/')
+            } else {
+                $scope.user = user
+                $rootScope.user = $scope.user
+            }
+        })
+
+        $scope.greeting = 'hi invetnory'
+
+    }])
+
+angular.module('myApp')
+     .controller('skillsController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', '$route', function($scope, authService, $rootScope, $http, $location, $window, levelService, $route) {
+
+        authService.authCheck(function(user) {
+           if (!user) {
+            console.log('no user, dude')
+            $location.url('/')
+            } else {
+                $scope.user = user
+                $rootScope.user = $scope.user
+            }
+        })
+
+        $scope.greeting = 'hi skill'
+
+    }])
 
 
 

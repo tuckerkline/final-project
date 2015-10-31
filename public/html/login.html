@@ -1,7 +1,8 @@
+<img src = "../images/banner.jpg">
 <h1>Existing Users</h1>
-<form ng-submit="login()">
-    <input type="text" ng-model="loginForm.username" placeholder="Username"/>
-    <input type="password" ng-model="loginForm.password" placeholder="Password"/>
+<form ng-submit="login()" autocomplete="on">
+    <input type="text" name="fname" ng-model="loginForm.username" placeholder="Username"/>
+    <input type="password" ng-model="loginForm.password" placeholder="Password" />
     <input type="submit"/>
 </form>
 <h1>Register</h1>

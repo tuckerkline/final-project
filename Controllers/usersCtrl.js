@@ -4,7 +4,6 @@ var newUser = function(req, res) {
 	var newUser = new User({	
 		username : req.body.username,
 		password : req.body.password,
-		equipment : ['sword', 'wool hat']
 	})
 
 	newUser.save(function(err, doc){
@@ -12,6 +11,11 @@ var newUser = function(req, res) {
 	})
 }
 
+var findUsers = function(req, res) {
+	console.log('req params, ', req.params)
+}
+
 module.exports = {
 	newUser = newUser,
+	findUsers : findUsers
 }

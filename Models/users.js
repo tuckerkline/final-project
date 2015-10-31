@@ -12,7 +12,7 @@ var userSchema = mongoose.Schema({
     maxMP        : { type: Number, default: 10 },
     attackPower  : { type: Number, default: 3},
     potions      : { type: Number, default: 4 },
-    inventory    : { type: Object,  default: {} },
+    inventory    : { type: Object,  default: { "Dirty Bathrobe" : 1, "Body Spray Axe" : 1} },
     dragonScales : { type: Number, default: 0},
     questNumber  : { type: Number, default: 0}, 
     skills       : { type: Array, default: []},

@@ -32,3 +32,8 @@ a {
 .text-center {
     text-align: center;
 }
+
+.logout {
+    float: right;
+    padding-right: 40px;
+}

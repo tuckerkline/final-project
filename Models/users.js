@@ -12,12 +12,13 @@ var userSchema = mongoose.Schema({
     maxMP        : { type: Number, default: 10 },
     attackPower  : { type: Number, default: 3},
     potions      : { type: Number, default: 4 },
-    inventory    : { type: Object,  default: { "Dirty Bathrobe" : 1, "Body Spray Axe" : 1} },
+    inventory    : { type: Object,  default: { "Dirty Bathrobe" : 1, "Body Spray Axe" : 1, "Useless Stack" : 0} },
     dragonScales : { type: Number, default: 0},
     questNumber  : { type: Number, default: 0}, 
     skills       : { type: Array, default: []},
     dinoEggs     : { type: Number, default: 0},
     MPpotions    : { type: Number, default: 5},
-});
+    MMS          : { type: Number, default: 0},
+}); 
 
 module.exports = mongoose.model('user', userSchema); 

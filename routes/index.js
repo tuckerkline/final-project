@@ -61,6 +61,10 @@ router.post('/me', function(req, res) {
     req.body.maxMP = 10 + (req.body.level * 3)
     req.body.attackPower = req.body.level * 3
 
+    if (req.body.MMS > 0) {
+        req.body.attackPower += 2
+    }
+
 	User.findOneAndUpdate({username : req.body.username}, req.body, function(error, data) {
 		console.log(data)
         User.findOne({username : req.body.username}, function(error, data) {
@@ -69,6 +73,11 @@ router.post('/me', function(req, res) {
 	})
 })
 
+router.get('/stackstats', function(req, res) {
+    User.find({}).exec(function(err, docs) {
+        res.send(docs)
+    })    
+})
 
 
 

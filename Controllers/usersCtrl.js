@@ -16,6 +16,6 @@ var findUsers = function(req, res) {
 }
 
 module.exports = {
-	newUser = newUser,
+	newUser   : newUser,
 	findUsers : findUsers
 }

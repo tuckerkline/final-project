@@ -2,3 +2,11 @@
 <ul ng-repeat = "skill in user.skills track by $index">
 <li> {{skill}} </li>
 </ul>
+
+<hr>
+<div ng-show = "MMSshow">
+Current MP: {{user.MP}}
+<br>
+Use Make Me Stronger (2 MP): <button ng-click = "useMMS()">Buff yourself!1!</button>
+MMS adventures left: {{user.MMS}}
+</div>

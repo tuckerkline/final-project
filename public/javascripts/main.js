@@ -77,15 +77,24 @@ angular.module('myApp')
 	.controller('mainController', ['$scope', '$rootScope', '$http', '$location', 'authService', function($scope, $rootScope, $http, $location, authService) {
 
         authService.authCheck(function(user) {
-            console.log(user)
+            // console.log(user)
             if (!user) {
-                console.log('no user, dude')
+                // console.log('no user, dude')
                 $location.url('/')
             } else {
                  $scope.user = user
                  $rootScope.user = $scope.user
 
             }
+        })
+
+        $http({
+            method : 'GET',
+            url    : '/stackstats',
+        }).then(function(returnData){
+            $scope.stackLeaderboard = returnData.data
+
+            // console.log($scope.stackLeaderboard)
         })
 
         $scope.signup = function(){
@@ -170,6 +179,8 @@ angular.module('myApp')
             })
         }
 
+
+
  // HOW TO ADD AN ITEM
         // $scope.ait = function() {
         //     $rootScope.user.inventory["Test Item"] = 1
@@ -217,8 +228,8 @@ angular.module('myApp')
             })
         }
 
-        if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs < 8) {
-            $scope.text = "ahh. You have come back for another quest, I see! Well i was just about to make breakfast, but seem to be missing some eggs. Can you grab me 8 dinosaur eggs from the dino nest? After breakfast we'll get to the real adventures eh? Can't adventure on an empty stomach, right, lol jk okay bye!!1! \n You currently have " + $rootScope.user.dinoEggs + " Dino Eggs!"
+        if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 2 && $rootScope.user.dinoEggs < 8) {
+            $scope.text = "ahh. You have come back for another quest, I see! Well i was just about to make breakfast, but seem to be messageHistorysing some eggs. Can you grab me 8 dinosaur eggs from the dino nest? After breakfast we'll get to the real adventures eh? Can't adventure on an empty stomach, right, lol jk okay bye!!1! \n You currently have " + $rootScope.user.dinoEggs + " Dino Eggs!"
         } else if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs >= 8) {
             $scope.text = "Thank you, thank you, thank you, adventurer! You're such a sweetheart. Here, sit and eat some Dinomellette with me!"
             $rootScope.user.questNumber++
@@ -250,6 +261,8 @@ angular.module('myApp')
             }
         })
 
+       
+
 
 
         console.log($rootScope.user)
@@ -266,9 +279,7 @@ angular.module('myApp')
     
         $rootScope.alive = true
 
-        if( $rootScope.user.HP <= 0 ) {
-            $rootScope.alive = false
-        }
+        $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
 
         $scope.dragon = new Dragon()
         console.log($scope.dragon)
@@ -276,6 +287,7 @@ angular.module('myApp')
         $scope.text =  "You encounter a dragon. What do you want to do?"
 
         $scope.attack = function() {
+
             
            
             $scope.dragon.hp -= $rootScope.user.attackPower
@@ -291,7 +303,7 @@ angular.module('myApp')
 
 
                 $rootScope.user.gold += $scope.dragon.gold
-                $scope.text = "The dragon is dead. You now have " + $rootScope.user.dragonScales + " dragon scales"
+                $scope.text = "The dragon is dead. You gained " + $scope.dragon.gold + " gold. You now have " + $rootScope.user.dragonScales + " dragon scales"
 
             }
             
@@ -299,6 +311,10 @@ angular.module('myApp')
                 $scope.text = "you're dead"
                 // $scope.dragonShow = !$scope.dragonShow
                 $rootScope.alive = false
+            }
+
+            if ($rootScope.user.MMS > 0) {
+                $rootScope.user.MMS --
             }
 
             $http({
@@ -315,6 +331,7 @@ angular.module('myApp')
         
         $scope.hitHarder = function() {
             if($rootScope.user.skills[0] === 'Hit Harder (1 MP)' && $rootScope.user.MP > 0) {
+                $rootScope.user.dragonScales++
                 $scope.dragon.hp -= ($rootScope.user.attackPower * 1.5)
                 $rootScope.user.HP -= $scope.dragon.attackPower
                 $scope.text = "You hit the dragon. Hard."
@@ -326,13 +343,17 @@ angular.module('myApp')
                     $rootScope.user.xp += $scope.dragon.xp
                     $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
                     $rootScope.user.gold += $scope.dragon.gold
-                    $scope.text = "The dragon is dead. You now have " + $rootScope.user.dragonScales + " dragon scales"
+                    $scope.text = "The dragon is dead. You gained " + $scope.dragon.gold + " gold. You now have " + $rootScope.user.dragonScales + " dragon scales"
                 }
 
                 if ($rootScope.user.HP <= 0) {
                     $scope.text = "you're dead"
                     $scope.dragonShow = !$scope.dragonShow
                     $rootScope.alive = false
+                }
+
+                if ($rootScope.user.MMS > 0) {
+                    $rootScope.user.MMS --
                 }
 
                 $http({
@@ -456,7 +477,7 @@ angular.module('myApp')
 
         if ($rootScope.user.skills[0] === 'Hit Harder (1 MP)') {
             $scope.hitharderbought = false
-            $scope.hithardertext = "you've bought Hit Harder already"
+            $scope.hithardertext = "You've bought Hit Harder already"
         }
 
         if ($rootScope.user.skills[1] === 'Make Me Stronger (2 MP)') {
@@ -469,9 +490,9 @@ angular.module('myApp')
         $scope.buyLevel2Skill = function() {
             $rootScope.user.skills.push('Hit Harder (1 MP)')
             $rootScope.user.gold -= 10
-            $scope.text = "congrats you've learned Hit Harder! Go hit someone harder!"
+            $scope.text = "Congrats you've learned Hit Harder! Go hit someone harder!"
             $scope.hitharderbought = false
-            $scope.hithardertext = "you've bought Hit Harder already"
+            $scope.hithardertext = "You've bought Hit Harder already"
             $http({
                 method : 'POST',
                 url    : '/me',
@@ -576,6 +597,9 @@ angular.module('myApp')
             }
         })
 
+        $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
+
+        $scope.text = "You run into a dino guarding some eggs."
         $scope.dinoShow = true
         $rootScope.alive = true
         if ( $rootScope.user.HP < 0 ) {
@@ -608,7 +632,7 @@ angular.module('myApp')
 
 
                 $rootScope.user.gold += $scope.dino.gold
-                $scope.text = "The Dino is dead. You now have " + $rootScope.user.dinoEggs + " Dinosaur eggs for breakfast."
+                $scope.text = "The Dino is dead. You gained " + $scope.dino.gold + " gold. You now have " + $rootScope.user.dinoEggs + " Dinosaur eggs for breakfast."
 
             }
             
@@ -616,6 +640,10 @@ angular.module('myApp')
                 $scope.text = "you're dead"
                 $scope.dinoShow = !$scope.dinoShow
                 $rootScope.alive = false
+            }
+
+            if ($rootScope.user.MMS > 0) {
+                $rootScope.user.MMS --
             }
 
             $http({
@@ -631,6 +659,7 @@ angular.module('myApp')
 
         $scope.hitHarder = function() {
             if($rootScope.user.skills[0] === 'Hit Harder (1 MP)' && $rootScope.user.MP > 0) {
+                $rootScope.user.dinoEggs++
                 $scope.dino.hp -= ($rootScope.user.attackPower * 1.5)
                 $rootScope.user.HP -= $scope.dino.attackPower
                 $scope.text = "You hit the dino. Hard."
@@ -641,13 +670,17 @@ angular.module('myApp')
                     $rootScope.user.xp += $scope.dino.xp
                     $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
                     $rootScope.user.gold += $scope.dino.gold
-                    $scope.text = "The dino is dead. You now have " + $rootScope.user.dinoEggs + " dino eggs"
+                    $scope.text = "The Dino is dead. You gained " + $scope.dino.gold + " gold. You now have " + $rootScope.user.dinoEggs + " Dinosaur eggs for breakfast."
                 }
 
                 if ($rootScope.user.HP <= 0) {
                     $scope.text = "you're dead"
                     $scope.dinoShow = !$scope.dinoShow
                     $rootScope.alive = false
+                }
+
+                if ($rootScope.user.MMS > 0) {
+                    $rootScope.user.MMS --
                 }
  
                 $http({
@@ -704,8 +737,29 @@ angular.module('myApp')
                 $rootScope.user = $scope.user
             }
         })
+        $scope.MMSshow = false
+        if ($rootScope.user.skills[1] = 'Make Me Stronger (2MP)' ) {
+            $scope.MMSshow = true
+        }
 
-        $scope.greeting = 'hi skill'
+        $scope.useMMS = function() {
+            if ($rootScope.user.MP > 0) {
+                $rootScope.user.MP -= 2
+                $rootScope.user.MMS += 10
+
+                $http({
+                    method : 'POST',
+                    url    : '/me',
+                    data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+            } else {
+                alert('You need more MP.')
+            }
+
+        }
+
 
     }])
 

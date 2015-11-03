@@ -65,6 +65,10 @@ router.post('/me', function(req, res) {
         req.body.attackPower += 2
     }
 
+    if (req.body.HP < 0) {
+        req.body.HP = 0
+    }
+
 	User.findOneAndUpdate({username : req.body.username}, req.body, function(error, data) {
 		console.log(data)
         User.findOne({username : req.body.username}, function(error, data) {

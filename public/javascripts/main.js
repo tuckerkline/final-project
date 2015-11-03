@@ -246,6 +246,14 @@ angular.module('myApp')
             })
         }
 
+        if ($rootScope.user.questNumber === 2 && $rootScope.user.level > 4 && $rootScope.user.ghastper === 0) {
+            $scope.text = "Ah! Adventurer! You seem strong enough, finally (*rolls his eyes*). We are desperate need of help. We have lost our good friend Ghastper the Good Ghost. He got lost in the spooooooky mansion! Please, go save him."
+        }
+
+        if ($rootScope.user.questNumber === 2 && $rootScope.user.ghastper === 1) {
+            $scope.text = "you did it! you saved Ghastper, my only lover."
+        } 
+
 
 
     }])
@@ -282,6 +290,10 @@ angular.module('myApp')
         
     
         $rootScope.alive = true
+
+        if ($rootScope.user.HP <= 0) {
+            $rootScope.alive = false
+        }
 
         $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
 
@@ -606,6 +618,10 @@ angular.module('myApp')
         $scope.text = "You run into a dino guarding some eggs."
         $scope.dinoShow = true
         $rootScope.alive = true
+
+        if ($rootScope.user.HP <= 0) {
+            $rootScope.alive = false
+        }
         if ( $rootScope.user.HP < 0 ) {
             $rootScope.alive = false
         }
@@ -786,6 +802,103 @@ angular.module('myApp')
         if ($rootScope.user.questNumber < 2) {
             $rootScope.questNumber3 = !$rootScope.questNumber3
         } 
+
+        var ghastperNum = Math.floor(Math.random() * 7)
+        var advNum = Math.floor(Math.random() * 7)
+
+        $rootScope.ghastper = false
+        $rootScope.badGhost = false
+        if ($rootScope.alive === true) {
+            $scope.text = "You see a ghost. It's a bad ghost."
+        } else {
+            $scope.text = "You're dead. Go fix that."
+        }
+
+        var Ghost = function() {
+            this.name = "ghost"
+            this.hp = 19 + Math.floor(Math.random() * 3)
+            this.xp = Math.floor(this.hp * 2)
+            this.gold = 15 + (Math.floor(Math.random() * 20))
+            this.attackPower = 7
+        }
+
+        $scope.ghost = new Ghost()
+
+        $rootScope.alive = true
+
+        if ($rootScope.user.HP <= 0) {
+            $rootScope.alive = false
+        }
+
+        $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
+
+        if (ghastperNum === advNum) {
+            $rootScope.ghastper = true
+
+        } 
+        $scope.saveGhastper = function() {
+                $rootScope.user.ghastper = 1
+                $scope.ghastperText = 'You save Ghastper! Hooray!'
+                $http({
+                    method : 'POST',
+                    url    : '/me',
+                    data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+            }
+
+        if (ghastperNum != advNum) {
+            $rootScope.badGhost = true
+            $scope.ghostShow = true
+            console.log('no match')
+            $scope.attack = function() {
+           
+                $scope.ghost.hp -= $rootScope.user.attackPower
+                $rootScope.user.HP -= $scope.ghost.attackPower
+                $scope.text = "You attack the ghost."
+                
+                if ($scope.ghost.hp <= 0) {
+                    $scope.ghostShow = false
+
+                    $rootScope.user.xp += $scope.ghost.xp
+
+                    $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
+
+
+                    $rootScope.user.gold += $scope.ghost.gold
+                    $scope.text = "The ghost is dead. You gained " + $scope.ghost.gold + " gold."
+
+                }
+                
+                if ($rootScope.user.HP <= 0 || $rootScope.alive === false) {
+                    $scope.text = "you're dead"
+                    // $scope.dragonShow = !$scope.dragonShow
+                    $rootScope.alive = false
+                }
+
+                if ($rootScope.user.MMS > 0) {
+                    $rootScope.user.MMS --
+                }
+
+                $http({
+                    method : 'POST',
+                    url    : '/me',
+                    data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+        }
+        }
+
+        $scope.deeper = function() {
+                            
+            $route.reload()
+            
+            
+
+        }
+
 
 
 

@@ -19,6 +19,7 @@ var userSchema = mongoose.Schema({
     dinoEggs     : { type: Number, default: 0},
     MPpotions    : { type: Number, default: 5},
     MMS          : { type: Number, default: 0},
+    ghastper     : { type: Number, default: 0}, 
 }); 
 
 module.exports = mongoose.model('user', userSchema); 

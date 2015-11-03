@@ -1,9 +1,44 @@
 <div ng-show = "questNumber3">
 
-hi
-
+<div ng-show = "ghastper">
+	<img src = '../images/ghastper.jpg'>
+<br>
+You meet Ghastper, the Good Ghost at the base of some stairs. 
+<br>
+{{ghastperText}}
+<br>
+<button ng-click = "saveGhastper()">Lead Ghastper out of the Spooky Mansion</button>
 </div>
 
+<div ng-show = "badGhost">
+{{text}}
+<div ng-show = "alive">
+
+
+<div ng-show = "ghostShow">
+<img src = "../images/bad-ghost.jpg">
+<br>
+<br>
+You have {{user.HP}} HP. 
+<br>
+You have {{user.MP}} MP.
+<br>
+<br>
+<button ng-click = "attack()">Attack</button>
+
+<button ng-click = "run()">Run</button>	
+
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div ng-show = "!ghostShow">
+<button ng-click = 'deeper()'>Venture on.</button>
+</div>
 
 
 <div ng-show = "!questNumber3">

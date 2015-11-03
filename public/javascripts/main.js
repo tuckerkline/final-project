@@ -167,6 +167,22 @@ angular.module('myApp')
             })
         }
 
+        $scope.fillHealth = function() {
+            var diff = $rootScope.user.maxHP - $rootScope.user.HP
+            if ($rootScope.user.potions >= diff) {
+                $rootScope.user.HP += diff
+                $rootScope.user.potions -= diff
+            }
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+
+        }
+
         $scope.drinkMPPotion = function() {
             if ($rootScope.user.MP < $rootScope.user.maxMP && $rootScope.user.MPpotions > 0) {
                 $rootScope.user.MP++
@@ -181,6 +197,22 @@ angular.module('myApp')
             }).then(function(returnData) {
                 // no need for anything here
             })
+        }
+
+        $scope.fillMana = function() {
+            var mdiff = $rootScope.user.maxMP - $rootScope.user.MP
+            if ($rootScope.user.MPpotions >= mdiff) {
+                $rootScope.user.MP += mdiff
+                $rootScope.user.MPpotions -= mdiff
+            }
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+
         }
 
 
@@ -639,7 +671,7 @@ angular.module('myApp')
             this.name = "dino"
             this.hp = 14 + Math.floor(Math.random() * 3)
             this.xp = Math.floor(this.hp * 2)
-            this.gold = (30 + Math.floor(Math.random() * 20))
+            this.gold = (30 + Math.floor(Math.random() * 20 ))
             this.attackPower = 4
         }
 
@@ -831,7 +863,7 @@ angular.module('myApp')
             this.name = "ghost"
             this.hp = 19 + Math.floor(Math.random() * 3)
             this.xp = Math.floor(this.hp * 2)
-            this.gold = 15 + (Math.floor(Math.random() * 20))
+            this.gold = 45 + (Math.floor(Math.random() * 20))
             this.attackPower = 7
         }
 

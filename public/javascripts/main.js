@@ -67,6 +67,10 @@ angular.module('myApp')
                 templateUrl : '/html/skills.html',
                 controller  : 'skillsController'
             })
+            .when('/spooky-mansion', {
+                templateUrl : '/html/spooky-mansion.html',
+                controller  : 'spooky-mansionController'
+            })
 
 
  
@@ -198,15 +202,15 @@ angular.module('myApp')
 angular.module('myApp')
     .controller('quest-masterController', ['$scope', '$rootScope', '$http',  '$location', 'authService', function($scope, $rootScope, $http, $location, authService) {
 
-        // authService.authCheck(function(user) {
-        //     if (!user) {
-        //         console.log('no user, dude')
-        //         $location.url('/')
-        //     } else {
-        //          $scope.user = user
+        authService.authCheck(function(user) {
+            if (!user) {
+                console.log('no user, dude')
+                $location.url('/')
+            } else {
+                 $scope.user = user
 
-        //     }
-        // })
+            }
+        })
     $rootScope.user = $scope.user
 
         $scope.text = "come back for another quest when you are stronger"
@@ -737,9 +741,10 @@ angular.module('myApp')
                 $rootScope.user = $scope.user
             }
         })
-        $scope.MMSshow = false
-        if ($rootScope.user.skills[1] = 'Make Me Stronger (2MP)' ) {
-            $scope.MMSshow = true
+
+        $rootScope.MMSshow = false
+        if ($rootScope.user.skills[1] === 'Make Me Stronger (2 MP)' ) {
+            $rootScope.MMSshow = true
         }
 
         $scope.useMMS = function() {
@@ -763,5 +768,27 @@ angular.module('myApp')
 
     }])
 
+
+angular.module('myApp')
+     .controller('spooky-mansionController', ['$scope','authService', '$rootScope', '$http',  '$location', '$window', 'levelService', '$route', function($scope, authService, $rootScope, $http, $location, $window, levelService, $route) {
+
+        authService.authCheck(function(user) {
+           if (!user) {
+            console.log('no user, dude')
+            $location.url('/')
+            } else {
+                $scope.user = user
+                $rootScope.user = $scope.user
+            }
+        })
+
+        $rootScope.questNumber3 = true
+        if ($rootScope.user.questNumber < 2) {
+            $rootScope.questNumber3 = !$rootScope.questNumber3
+        } 
+
+
+
+    }])
 
 

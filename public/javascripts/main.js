@@ -233,7 +233,7 @@ angular.module('myApp')
         }
 
         if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 2 && $rootScope.user.dinoEggs < 8) {
-            $scope.text = "ahh. You have come back for another quest, I see! Well i was just about to make breakfast, but seem to be messageHistorysing some eggs. Can you grab me 8 dinosaur eggs from the dino nest? After breakfast we'll get to the real adventures eh? Can't adventure on an empty stomach, right, lol jk okay bye!!1! \n You currently have " + $rootScope.user.dinoEggs + " Dino Eggs!"
+            $scope.text = "ahh. You have come back for another quest, I see! Well i was just about to make breakfast, but seem to be missing some eggs. Can you grab me 8 dinosaur eggs from the dino nest? After breakfast we'll get to the real adventures eh? Can't adventure on an empty stomach, right, lol jk okay bye!!1! \n You currently have " + $rootScope.user.dinoEggs + " Dino Eggs!"
         } else if ($rootScope.user.questNumber === 1 && $rootScope.user.level > 1 && $rootScope.user.dinoEggs >= 8) {
             $scope.text = "Thank you, thank you, thank you, adventurer! You're such a sweetheart. Here, sit and eat some Dinomellette with me!"
             $rootScope.user.questNumber++
@@ -252,6 +252,15 @@ angular.module('myApp')
 
         if ($rootScope.user.questNumber === 2 && $rootScope.user.ghastper === 1) {
             $scope.text = "you did it! you saved Ghastper, my only lover."
+            $rootScope.user.questNumber++
+            $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+            }).then(function(returnData) {
+                // no need for anything here
+            })
+
         } 
 
 
@@ -283,7 +292,7 @@ angular.module('myApp')
             this.hp = 10 + Math.floor(Math.random() * 5)
             this.inventory = ['Dragon Scale']
             this.xp = Math.floor(this.hp * 1.5)
-            this.gold = (Math.floor(Math.random() * 6))
+            this.gold = ( 18 + Math.floor(Math.random() * 15))
             this.attackPower = 2
         }
 
@@ -630,7 +639,7 @@ angular.module('myApp')
             this.name = "dino"
             this.hp = 14 + Math.floor(Math.random() * 3)
             this.xp = Math.floor(this.hp * 2)
-            this.gold = (Math.floor(Math.random() * 11))
+            this.gold = (30 + Math.floor(Math.random() * 20))
             this.attackPower = 4
         }
 
@@ -798,14 +807,18 @@ angular.module('myApp')
             }
         })
 
-        $rootScope.questNumber3 = true
-        if ($rootScope.user.questNumber < 2) {
-            $rootScope.questNumber3 = !$rootScope.questNumber3
+        $rootScope.questNumber3 = false
+        if ($rootScope.user.questNumber === 2 && $rootScope.user.level > 4) {
+            $rootScope.questNumber3 = true
         } 
 
         var ghastperNum = Math.floor(Math.random() * 7)
         var advNum = Math.floor(Math.random() * 7)
+        $rootScope.alive = true
 
+        if ($rootScope.user.HP <= 0) {
+            $rootScope.alive = false
+        }
         $rootScope.ghastper = false
         $rootScope.badGhost = false
         if ($rootScope.alive === true) {
@@ -824,11 +837,7 @@ angular.module('myApp')
 
         $scope.ghost = new Ghost()
 
-        $rootScope.alive = true
-
-        if ($rootScope.user.HP <= 0) {
-            $rootScope.alive = false
-        }
+        
 
         $rootScope.user.level = Math.floor(levelService.levelChecker($rootScope.user.xp))
 

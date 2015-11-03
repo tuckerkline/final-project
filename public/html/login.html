@@ -17,7 +17,7 @@
 <div class = "jumbotron">
 <h2> Useless Stack Leaderboard </h2>
 <ul ng-repeat = "user in stackLeaderboard | orderBy : '-this.inventory[\'Useless Stack\']'">
-<li> {{user.username}} : {{user.inventory["Useless Stack"]}}</li>
+<li> {{$index + 1}}: {{user.username}} : {{user.inventory["Useless Stack"]}}</li>
 </ul>
 </div>
 

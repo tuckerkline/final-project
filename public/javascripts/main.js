@@ -470,6 +470,23 @@ angular.module('myApp')
             })
         }
 
+        $scope.buyMultiPotions = function() {
+            console.log($scope.multiPotion)
+            if ($rootScope.user.gold > $scope.multiPotion) {
+                $rootScope.user.gold -= $scope.multiPotion
+                $rootScope.user.potions += $scope.multiPotion
+                $scope.multiPotion = 0
+
+                $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+                }
+        }
+
 
         $scope.buyMPpotion = function() {
             if ($rootScope.user.gold > 1) {
@@ -483,6 +500,23 @@ angular.module('myApp')
             }).then(function(returnData) {
                 // no need for anything here
             })
+        }
+
+        $scope.buyMultiMPPotions = function() {
+            console.log($scope.multiMPPotion)
+            if ($rootScope.user.gold > $scope.multiMPPotion * 2) {
+                $rootScope.user.gold -= $scope.multiMPPotion * 2
+                $rootScope.user.MPpotions += $scope.multiMPPotion
+                $scope.multiMPPotion = 0
+
+                $http({
+                method : 'POST',
+                url    : '/me',
+                data   : $scope.user
+                }).then(function(returnData) {
+                    // no need for anything here
+                })
+                }
         }
 
         $scope.buyUselessStack = function() {
@@ -805,7 +839,7 @@ angular.module('myApp')
         }
 
         $scope.useMMS = function() {
-            if ($rootScope.user.MP > 0) {
+            if ($rootScope.user.MP >= 2) {
                 $rootScope.user.MP -= 2
                 $rootScope.user.MMS += 10
 
@@ -888,6 +922,9 @@ angular.module('myApp')
                     // no need for anything here
                 })
             }
+
+            $scope.ghostShow = true
+
 
         if (ghastperNum != advNum) {
             $rootScope.badGhost = true

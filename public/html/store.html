@@ -6,7 +6,18 @@
 you have {{user.gold}} gold
 
 <ul>
-<li> Potion : 1 gold (you have: {{user.potions}} ) <button ng-click = "buyPotion()"><i class="fa fa-money"></i></button></li>
+<li> Potion : 1 gold (you have: {{user.potions}} ) <button ng-click = "buyPotion()"><i class="fa fa-money"></i></button></li> 
+
+<form ng-submit = "buyMultiPotions()">
+<label>Buy multiple potions:</label><input placeholder = 'How many potions?' type = 'number' min = "0" ng-model = 'multiPotion'>
+<input type = 'submit'>
+</form>
+
 <li>Mana rejuvinator : 2 gold (you have: {{user.MPpotions}}) <button ng-click = "buyMPpotion()"><i class="fa fa-money"></i></button></li>
+
+<form ng-submit = "buyMultiMPPotions()">
+<label>Buy multiple mana rejuvinators:</label><input placeholder = 'How many rejuvinators?' type = 'number' min = "0" ng-model = 'multiMPPotion'>
+<input type = 'submit'>
+</form>
 
 <li>Useless Stack : 1000 gold (you have: {{user.inventory["Useless Stack"]}} )<button ng-click = "buyUselessStack()"><i class="fa fa-money"></i></button></li>
